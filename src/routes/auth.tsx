@@ -247,49 +247,15 @@ function DemoLoginButton({ onLoadingState }: { onLoadingState: (loading: boolean
     const demoEmail = "demo2@threadcounty.com";
     const demoPassword = "ThreadCountyDemo123!";
 
-    // Step 1: Try logging in with the demo account
-    const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-      email: demoEmail,
-      password: demoPassword,
-    });
-
-    if (!signInError && signInData.session) {
-      toast.success("Signed in as Demo Guest!");
-      setLoading(false);
-      onLoadingState(false);
-      navigate({ to: "/dashboard" });
-      return;
-    }
-
-    // Step 2: If sign-in failed (meaning account doesn't exist yet), let's create it on-the-fly!
-    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
-      email: demoEmail,
-      password: demoPassword,
-      options: {
-        data: { full_name: "Demo Guest" },
-      },
-    });
-
-    if (signUpError) {
-      toast.error(`Demo creation failed: ${signUpError.message}`);
-      setLoading(false);
-      onLoadingState(false);
-      return;
-    }
-
-    // Step 3: Now log in immediately
-    const { data: finalSignIn, error: finalError } = await supabase.auth.signInWithPassword({
-      email: demoEmail,
-      password: demoPassword,
-    });
+    const { data, error } = await supabase.auth.signInAnonymously();
 
     setLoading(false);
     onLoadingState(false);
 
-    if (finalError) {
-      toast.error(`Login failed: ${finalError.message}. Please check if email confirmation is turned off in Supabase.`);
+    if (error) {
+      toast.error(`Login failed: ${error.message}. Please check if anonymous sign-ins are enabled.`);
     } else {
-      toast.success("Welcome! Demo account initialized.");
+      toast.success("Welcome! Demo account initialized anonymously.");
       navigate({ to: "/dashboard" });
     }
   }
