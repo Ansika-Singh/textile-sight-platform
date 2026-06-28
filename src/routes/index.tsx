@@ -45,17 +45,52 @@ function LandingPage() {
 }
 
 function Hero() {
+  const words = ["material integrity.", "quality control.", "textile analysis.", "weave structure."];
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % words.length);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, [words.length]);
+
   return (
     <section className="relative overflow-hidden border-b border-border bg-background">
       <div className="absolute inset-0 grid-pattern opacity-50 animate-grid-shift" aria-hidden />
+      
+      {/* Floating Dialog Boxes */}
+      <div className="absolute top-20 left-10 hidden lg:block animate-float" style={{ animationDelay: "0ms", animationDuration: "6s" }}>
+        <div className="rounded-md border border-border bg-card/80 backdrop-blur-md p-3 shadow-xl">
+          <div className="flex items-center gap-2">
+            <Sparkles className="size-4 text-brand" />
+            <span className="font-mono text-[10px] uppercase tracking-widest">Weave Detected</span>
+          </div>
+          <div className="mt-1 font-semibold text-sm">Jacquard (Complex)</div>
+        </div>
+      </div>
+      
+      <div className="absolute bottom-20 left-1/4 hidden lg:block animate-float" style={{ animationDelay: "2000ms", animationDuration: "7s" }}>
+        <div className="rounded-md border border-border bg-card/80 backdrop-blur-md p-3 shadow-xl">
+          <div className="flex items-center gap-2">
+            <Scan className="size-4 text-brand" />
+            <span className="font-mono text-[10px] uppercase tracking-widest">Confidence</span>
+          </div>
+          <div className="mt-1 font-semibold text-sm text-brand">99.85%</div>
+        </div>
+      </div>
+
       <div className="relative mx-auto grid max-w-7xl gap-16 px-6 py-24 lg:grid-cols-12 lg:items-center lg:py-32">
-        <div className="lg:col-span-6">
+        <div className="lg:col-span-6 relative z-10">
           <div className="tag mb-6 animate-fade-in-up" style={{ animationDelay: "0ms" }}>
             <span className="size-1.5 rounded-full bg-brand animate-pulse" />
             v2.4 · Real-time Optical Analysis
           </div>
           <h1 className="text-balance text-5xl font-semibold leading-[1.05] tracking-tight text-foreground sm:text-6xl lg:text-7xl animate-fade-in-up" style={{ animationDelay: "100ms" }}>
-            The metric of <span className="text-brand">material integrity.</span>
+            The metric of <br className="hidden lg:block" />
+            <span className="text-brand inline-block min-w-[300px] transition-all duration-500 ease-in-out opacity-100 translate-y-0" key={index} style={{ animation: "fade-in-up 0.5s ease-out" }}>
+              {words[index]}
+            </span>
           </h1>
           <p className="mt-6 max-w-xl text-pretty text-lg text-muted-foreground animate-fade-in-up" style={{ animationDelay: "200ms" }}>
             Automated thread density, warp/weft validation and weave identification for
@@ -102,7 +137,7 @@ function Hero() {
           </dl>
         </div>
 
-        <div className="lg:col-span-6 animate-fade-in-up" style={{ animationDelay: "200ms" }}>
+        <div className="lg:col-span-6 animate-fade-in-up relative z-10" style={{ animationDelay: "200ms" }}>
           <HeroLoupe />
         </div>
       </div>
