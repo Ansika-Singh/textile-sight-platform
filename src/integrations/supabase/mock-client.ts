@@ -561,5 +561,36 @@ export const mockSupabase = {
         }
       };
     }
+  },
+
+  channel: (name: string) => {
+    return {
+      on: (event: any, filter: any, callback: any) => {
+        return {
+          subscribe: () => {
+            return {
+              unsubscribe: () => {}
+            };
+          }
+        };
+      }
+    };
+  },
+  
+  removeChannel: (channel: any) => {
+    if (channel?.unsubscribe) {
+      channel.unsubscribe();
+    }
+  },
+
+  rpc: async (fn: string, args?: any) => {
+    // Mock rpc calls
+    if (fn === "delete_user_self") {
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("threadcounty_mock_user");
+      }
+      return { data: null, error: null };
+    }
+    return { data: null, error: null };
   }
 };
