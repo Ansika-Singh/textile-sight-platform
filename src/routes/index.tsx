@@ -530,7 +530,7 @@ function InstrumentPreview() {
           <div className="overflow-hidden rounded-lg border border-white/10 bg-[oklch(0.18_0.012_240)] shadow-2xl">
             {/* Swatch Selector Tab Header */}
             <div className="flex flex-wrap items-center gap-2 border-b border-white/10 p-4 bg-neutral-900 overflow-x-auto">
-              <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-background/40 mr-2">Select Specimen Swatch:</span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.18em] text-zinc-400 mr-2">Select Specimen Swatch:</span>
               {SWATCHES.map((sw) => (
                 <button
                   key={sw.id}
@@ -543,7 +543,7 @@ function InstrumentPreview() {
                   } ${
                     activeSwatch.id === sw.id
                       ? "border-brand bg-brand text-brand-foreground shadow-[0_0_8px_oklch(0.50_0.10_195/0.4)]"
-                      : "border-white/10 bg-white/[0.02] text-background/60 hover:border-white/30 hover:text-background"
+                      : "border-white/10 bg-white/[0.02] text-zinc-400 hover:border-white/30 hover:text-zinc-100"
                   }`}
                 >
                   {sw.name}
@@ -555,7 +555,7 @@ function InstrumentPreview() {
               <div className="bg-[oklch(0.18_0.012_240)] p-6 lg:p-10">
                 <div className="flex items-center justify-between border-b border-white/10 pb-4">
                   <div className="flex items-center gap-3">
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-background/50">
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-400">
                       SCAN_ID · {activeSwatch.scanId}
                     </span>
                     <span className={`rounded-sm px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-widest transition-colors duration-300 ${
@@ -564,7 +564,7 @@ function InstrumentPreview() {
                       {isScanning ? "Scanning..." : "Verified"}
                     </span>
                   </div>
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-background/40">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
                     {activeSwatch.date}
                   </span>
                 </div>
@@ -609,8 +609,8 @@ function InstrumentPreview() {
                     </div>
                     <button className={`w-full rounded-sm py-3 font-mono text-[10px] font-semibold uppercase tracking-widest transition-all duration-300 ${
                       isScanning 
-                        ? "bg-white/10 text-background/40 cursor-not-allowed" 
-                        : "bg-background text-foreground hover:bg-brand hover:text-brand-foreground hover:shadow-md hover:scale-[1.01] active:scale-[0.99]"
+                        ? "bg-white/10 text-zinc-500 cursor-not-allowed" 
+                        : "bg-zinc-100 text-zinc-900 hover:bg-brand hover:text-brand-foreground hover:shadow-md hover:scale-[1.01] active:scale-[0.99]"
                     }`}>
                       {isScanning ? (
                         <span className="flex items-center justify-center gap-2">
@@ -625,8 +625,8 @@ function InstrumentPreview() {
               </div>
               <aside className="bg-[oklch(0.14_0.012_240)] p-6 lg:p-8 flex flex-col justify-between">
                 <div>
-                  <span className="font-mono text-[10px] uppercase tracking-widest text-background/40">AI Insights & QC</span>
-                  <ul className="mt-4 space-y-4 text-[13px] leading-relaxed text-background/70">
+                  <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">AI Insights & QC</span>
+                  <ul className="mt-4 space-y-4 text-[13px] leading-relaxed text-zinc-300">
                     {activeSwatch.insights.map((ins, idx) => (
                       <li 
                         key={idx} 
@@ -641,7 +641,7 @@ function InstrumentPreview() {
                     ))}
                   </ul>
                 </div>
-                <div className="mt-8 border-t border-white/10 pt-4 font-mono text-[9px] text-background/30 text-right">
+                <div className="mt-8 border-t border-white/10 pt-4 font-mono text-[9px] text-zinc-600 text-right">
                   THREADCOUNT VISION V2.4
                 </div>
               </aside>
@@ -656,9 +656,9 @@ function InstrumentPreview() {
 function Metric({ label, value, unit, bar }: { label: string; value: string; unit?: string; bar: number }) {
   return (
     <div>
-      <span className="font-mono text-[10px] uppercase tracking-widest text-background/50">{label}</span>
-      <div className="mt-1 font-mono text-3xl tracking-tight text-background">
-        {value} {unit && <span className="text-xs text-background/40">{unit}</span>}
+      <span className="font-mono text-[10px] uppercase tracking-widest text-zinc-400">{label}</span>
+      <div className="mt-1 font-mono text-3xl tracking-tight text-zinc-100">
+        {value} {unit && <span className="text-xs text-zinc-500">{unit}</span>}
       </div>
       <div className="mt-2 h-1 w-full overflow-hidden bg-white/10">
         <div className="h-full bg-brand transition-all duration-500 ease-out" style={{ width: `${bar * 100}%` }} />
@@ -669,8 +669,8 @@ function Metric({ label, value, unit, bar }: { label: string; value: string; uni
 function Mini({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
     <div className="rounded-sm border border-white/10 bg-white/[0.03] px-3 py-2 transition-all duration-300 hover:bg-white/[0.06]">
-      <div className="font-mono text-[10px] uppercase tracking-widest text-background/40">{label}</div>
-      <div className={`mt-0.5 text-sm font-medium ${accent ? "text-brand" : "text-background"}`}>{value}</div>
+      <div className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">{label}</div>
+      <div className={`mt-0.5 text-sm font-medium ${accent ? "text-brand" : "text-zinc-100"}`}>{value}</div>
     </div>
   );
 }
