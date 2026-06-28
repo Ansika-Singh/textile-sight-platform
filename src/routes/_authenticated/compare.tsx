@@ -147,15 +147,8 @@ function ComparePage() {
           <div className="grid gap-6 md:grid-cols-2">
             {/* Fabric A Info */}
             <Card className="border-border bg-card overflow-hidden">
-              <div className="aspect-[4/3] w-full bg-surface-2 relative overflow-hidden border-b border-border">
-                {imgUrlA ? (
-                  <img src={imgUrlA} alt="Fabric A" className="size-full object-cover object-center" onError={() => setImgUrlA(null)} />
-                ) : (
-                  <div className="size-full flex items-center justify-center font-mono text-xs text-muted-foreground bg-surface-2">
-                    Fabric A macro photo
-                  </div>
-                )}
-                <Badge className="absolute top-3 left-3 bg-brand text-brand-foreground rounded-sm font-mono text-[10px] uppercase">Fabric A</Badge>
+              <div className="flex justify-between items-center bg-brand/10 px-6 py-3 border-b border-border">
+                <Badge className="bg-brand text-brand-foreground rounded-sm font-mono text-[10px] uppercase">Fabric A</Badge>
               </div>
               <CardContent className="p-6 space-y-4">
                 <div>
@@ -194,15 +187,8 @@ function ComparePage() {
 
             {/* Fabric B Info */}
             <Card className="border-border bg-card overflow-hidden">
-              <div className="aspect-[4/3] w-full bg-surface-2 relative overflow-hidden border-b border-border">
-                {imgUrlB ? (
-                  <img src={imgUrlB} alt="Fabric B" className="size-full object-cover object-center" onError={() => setImgUrlB(null)} />
-                ) : (
-                  <div className="size-full flex items-center justify-center font-mono text-xs text-muted-foreground bg-surface-2">
-                    Fabric B macro photo
-                  </div>
-                )}
-                <Badge className="absolute top-3 left-3 bg-foreground text-background rounded-sm font-mono text-[10px] uppercase">Fabric B</Badge>
+              <div className="flex justify-between items-center bg-foreground/5 px-6 py-3 border-b border-border">
+                <Badge className="bg-foreground text-background rounded-sm font-mono text-[10px] uppercase">Fabric B</Badge>
               </div>
               <CardContent className="p-6 space-y-4">
                 <div>
