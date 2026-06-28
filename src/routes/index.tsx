@@ -472,7 +472,11 @@ function InstrumentPreview() {
   const [displayWeft, setDisplayWeft] = useState(0);
   const [displayConfidence, setDisplayConfidence] = useState(0);
 
-  const runCountingAnimation = (targetDensity: number, targetWarp: number, targetWeft: number, targetConfidence: number) => {
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const runCountingAnimation = useCallback((targetDensity: number, targetWarp: number, targetWeft: number, targetConfidence: number) => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    
     setIsScanning(true);
     setDisplayDensity(0);
     setDisplayWarp(0);
@@ -484,7 +488,7 @@ function InstrumentPreview() {
     const intervalTime = duration / steps;
     let step = 0;
 
-    const timer = setInterval(() => {
+    timerRef.current = setInterval(() => {
       step++;
       const progress = step / steps;
       const easeProgress = 1 - Math.pow(1 - progress, 3); // Cubic ease out
@@ -495,7 +499,7 @@ function InstrumentPreview() {
       setDisplayConfidence(Number((targetConfidence * easeProgress).toFixed(1)));
 
       if (step >= steps) {
-        clearInterval(timer);
+        if (timerRef.current) clearInterval(timerRef.current);
         setDisplayDensity(targetDensity);
         setDisplayWarp(targetWarp);
         setDisplayWeft(targetWeft);
@@ -503,11 +507,14 @@ function InstrumentPreview() {
         setIsScanning(false);
       }
     }, intervalTime);
-  };
+  }, []);
 
   useEffect(() => {
     runCountingAnimation(activeSwatch.density, activeSwatch.warp, activeSwatch.weft, activeSwatch.confidence);
-  }, [activeSwatch]);
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [activeSwatch, runCountingAnimation]);
 
   return (
     <section className="border-b border-border bg-foreground py-24 text-background">
@@ -535,7 +542,12 @@ function InstrumentPreview() {
                 <button
                   key={sw.id}
                   onClick={() => {
-                    if (!isScanning) setActiveSwatch(sw);
+                    if (isScanning) return;
+                    if (activeSwatch.id === sw.id) {
+                      runCountingAnimation(sw.density, sw.warp, sw.weft, sw.confidence);
+                    } else {
+                      setActiveSwatch(sw);
+                    }
                   }}
                   disabled={isScanning}
                   className={`rounded-sm px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-widest border transition-all duration-300 ${
