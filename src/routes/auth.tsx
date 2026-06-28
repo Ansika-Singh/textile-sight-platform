@@ -412,9 +412,7 @@ function LoginForm() {
           </Button>
         </form>
         
-        <div className="mt-4">
-          <GoogleButton disabled={loading} />
-        </div>
+        
       </div>
     </div>
   );
@@ -581,9 +579,7 @@ function SignupForm() {
           </p>
         </form>
         
-        <div className="mt-4">
-          <GoogleButton disabled={loading} />
-        </div>
+        
       </div>
     </div>
   );
@@ -648,3 +644,4 @@ function ForgotForm() {
     </div>
   );
 }
+
