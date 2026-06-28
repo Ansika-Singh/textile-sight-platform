@@ -9,6 +9,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 import { fetchApi } from "@/lib/api";
 import { getPlanLimit } from "@/lib/plan-limits";
+import { analyzeWithOllama, testOllamaConnection } from "@/lib/ollama";
+import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/_authenticated/upload")({
   head: () => ({ meta: [{ title: "New analysis — ThreadCounty" }] }),
@@ -33,6 +35,10 @@ function UploadPage() {
   // OCR states
   const [scanningOcr, setScanningOcr] = useState(false);
   const [ocrText, setOcrText] = useState<string | null>(null);
+
+  // AI Provider states
+  const [aiProvider, setAiProvider] = useState<"gemini" | "ollama">("gemini");
+  const [ollamaModel, setOllamaModel] = useState("llava");
 
   // Compression helper
   const compressImageFile = async (f: File): Promise<{ blob: Blob; size: number }> => {
@@ -229,10 +235,25 @@ function UploadPage() {
 
     let report;
     try {
-      const reportRes = await fetchApi(`/reports?upload_id=${uploadRow.id}`, {
-        method: "POST",
-      });
-      report = reportRes.report;
+      if (aiProvider === "ollama") {
+        setStatusMessage("Running local Ollama vision model...");
+        const result = await analyzeWithOllama(ollamaModel, uploadData);
+        
+        report = {
+          id: crypto.randomUUID(),
+          upload_id: uploadRow.id,
+          user_id: user.id,
+          status: "completed",
+          ...result,
+          created_at: new Date().toISOString()
+        };
+        await supabase.from("reports").insert(report);
+      } else {
+        const reportRes = await fetchApi(`/reports?upload_id=${uploadRow.id}`, {
+          method: "POST",
+        });
+        report = reportRes.report;
+      }
       
       // Update with OCR notes if we have any
       const finalNotes = ocrText 
@@ -410,6 +431,58 @@ function UploadPage() {
               <li>• Avoid shadows and glare</li>
             </ul>
           </div>
+          
+          <div className="rounded-md border border-border bg-card p-5 space-y-4">
+            <h3 className="text-sm font-semibold">AI Provider</h3>
+            
+            <div className="flex bg-muted/50 p-1 rounded-md border border-border">
+              <button 
+                type="button"
+                onClick={() => setAiProvider("gemini")}
+                className={`flex-1 text-xs py-1.5 font-medium rounded-sm transition-all ${aiProvider === "gemini" ? "bg-background shadow-sm border border-border/50 text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                Gemini API
+              </button>
+              <button 
+                type="button"
+                onClick={() => setAiProvider("ollama")}
+                className={`flex-1 text-xs py-1.5 font-medium rounded-sm transition-all ${aiProvider === "ollama" ? "bg-background shadow-sm border border-border/50 text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                Local Ollama
+              </button>
+            </div>
+            
+            {aiProvider === "ollama" && (
+              <div className="space-y-2 animate-in fade-in duration-200">
+                <label className="text-xs text-muted-foreground">Ollama Vision Model</label>
+                <div className="flex gap-2">
+                  <Input 
+                    value={ollamaModel} 
+                    onChange={e => setOllamaModel(e.target.value)} 
+                    className="h-8 text-xs font-mono" 
+                    placeholder="e.g. llava" 
+                  />
+                  <Button 
+                    type="button" 
+                    variant="outline" 
+                    size="sm" 
+                    className="h-8 text-xs px-2"
+                    onClick={async () => {
+                      const ok = await testOllamaConnection();
+                      if (ok) toast.success("Connected to local Ollama!");
+                      else toast.error("Could not connect to localhost:11434. Check CORS settings.");
+                    }}
+                  >
+                    Test
+                  </Button>
+                </div>
+                <p className="text-[10px] text-muted-foreground">
+                  Ollama must be running on your machine with <code className="text-brand">OLLAMA_ORIGINS="*"</code>
+                </p>
+              </div>
+            )}
+          </div>
+          
           <Button
             onClick={analyze}
             disabled={!file || submitting || scanningOcr}
