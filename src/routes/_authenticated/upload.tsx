@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { fetchApi } from "@/lib/api";
 import { getPlanLimit } from "@/lib/plan-limits";
 import { Input } from "@/components/ui/input";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_authenticated/upload")({
   head: () => ({ meta: [{ title: "New analysis — ThreadCounty" }] }),
@@ -22,6 +23,7 @@ const ALLOWED = ["image/jpeg", "image/jpg", "image/png"];
 function UploadPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const qc = useQueryClient();
   
   const [file, setFile] = useState<File | null>(null);
   const [compressedBlob, setCompressedBlob] = useState<Blob | null>(null);
