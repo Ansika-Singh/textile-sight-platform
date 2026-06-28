@@ -130,8 +130,13 @@ function UploadPage() {
       );
       
       const text = result.data.text.trim();
-      if (!text) {
-        setOcrText(`--- OFFLINE OCR SCAN ---\nNo clear label text detected.`);
+      
+      // Calculate gibberish ratio (Tesseract hallucinates letters on fabric textures)
+      const alphanumericCount = (text.match(/[a-zA-Z0-9]/g) || []).length;
+      const validTextRatio = text.length > 0 ? alphanumericCount / text.length : 0;
+      
+      if (!text || validTextRatio < 0.5) {
+        setOcrText(`--- OFFLINE OCR SCAN ---\nNo legible text detected. Ensure the image contains a clear, high-contrast label.`);
       } else {
         setOcrText(`--- OFFLINE OCR SCAN ---\n${text}`);
       }
